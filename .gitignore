@@ -1,160 +1,85 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# Python Program to illustrate
+# Hangman Game
+import random
+from collections import Counter
 
-# C extensions
-*.so
+someWords = '''apple banana mango strawberry
+orange grape pineapple apricot lemon coconut watermelon
+cherry papaya berry peach lychee muskmelon'''
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+someWords = someWords.split(' ')
+# randomly choose a secret word from our "someWords" LIST.
+word = random.choice(someWords)		
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+if __name__ == '__main__':
+	print('Guess the word! HINT: word is a name of a fruit')
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+	for i in word:
+		# For printing the empty spaces for letters of the word
+		print('_', end = ' ')		
+	print()
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+	playing = True
+	# list for storing the letters guessed by the player
+	letterGuessed = ''				
+	chances = len(word) + 2
+	correct = 0
+	flag = 0
+	try:
+		while (chances != 0) and flag == 0: #flag is updated when the word is correctly guessed
+			print()
+			chances -= 1
 
-# Translations
-*.mo
-*.pot
+			try:
+				guess = str(input('Enter a letter to guess: '))
+			except:
+				print('Enter only a letter!')
+				continue
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+			# Validation of the guess
+			if not guess.isalpha():
+				print('Enter only a LETTER')
+				continue
+			elif len(guess) > 1:
+				print('Enter only a SINGLE letter')
+				continue
+			elif guess in letterGuessed:
+				print('You have already guessed that letter')
+				continue
 
-# Flask stuff:
-instance/
-.webassets-cache
 
-# Scrapy stuff:
-.scrapy
+			# If letter is guessed correctly
+			if guess in word:
+				k = word.count(guess) #k stores the number of times the guessed letter occurs in the word
+				for _ in range(k):	
+					letterGuessed += guess # The guess letter is added as many times as it occurs
 
-# Sphinx documentation
-docs/_build/
+			# Print the word
+			for char in word:
+				if char in letterGuessed and (Counter(letterGuessed) != Counter(word)):
+					print(char, end = ' ')
+					correct += 1
+				# If user has guessed all the letters
+				elif (Counter(letterGuessed) == Counter(word)): # Once the correct word is guessed fully,
+																# the game ends, even if chances remain
+					print("The word is: ", end=' ')
+					print(word)
+					flag = 1
+					print('Congratulations, You won!')
+					break # To break out of the for loop
+					break # To break out of the while loop
+				else:
+					print('_', end = ' ')
 
-# PyBuilder
-.pybuilder/
-target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
 
-# IPython
-profile_default/
-ipython_config.py
+		# If user has used all of his chances
+		if chances <= 0 and (Counter(letterGuessed) != Counter(word)):
+			print()
+			print('You lost! Try again..')
+			print('The word was {}'.format(word))
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
-
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/#use-with-ide
-.pdm.toml
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+	except KeyboardInterrupt:
+		print()
+		print('Bye! Try again.')
+		exit()
